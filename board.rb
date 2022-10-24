@@ -4,8 +4,6 @@ require_relative 'knight'
 
 # The main class for determining the knight's shortest path
 class Board
-  attr_reader :board
-
   # We use a queue here to search breadth first
   # JUST SET A  PARENT FOR EACH CHILD!!!!
   def knight_moves(start_pos, end_pos)
@@ -13,12 +11,12 @@ class Board
     steps = [Knight.new(end_pos)]
     until steps.compact.empty?
       Knight::MOVES.each do |move|
-        temp = add_array(move, steps[0].position)
-        if valid_array?(temp) && board.one? { |arr| arr == temp }
-          temp_move = Knight.new(temp)
+        sum = add_array(move, steps[0].position)
+        if valid_move?(sum, board)
+          temp_move = Knight.new(sum)
           temp_move.parent = steps[0]
           steps << temp_move
-          board.delete(temp)
+          board.delete(sum)
           if temp_move.position == start_pos
             print_moves(temp_move)
             return end_pos
@@ -30,6 +28,12 @@ class Board
   end
 
   private
+
+  def valid_move?(position, board)
+    return true if valid_array?(position) && board.one? { |arr| arr == position }
+
+    false
+  end
 
   def print_moves(move)
     count = -1
